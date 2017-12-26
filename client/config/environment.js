@@ -19,9 +19,17 @@ module.exports = function(environment) {
     },
 
     APP: {
-      // Here you can pass flags/options to your application instance
-      // when it is created
-    }
+      // Here you can pass flags/options to your application instance when it is created
+      demoApiKey: (process.env.DEMO_API_KEY || 'cb6469c69024696907215d7f3bedcc7880a5de16833945639d81b48b8d98a098'),
+      demoOAuthUrl: (process.env.DEMO_OAUTH_URL || 'http://localhost:3000/oauth'),
+    },
+
+    'ember-simple-auth' : {
+      baseURL:                     '',
+      authenticationRoute:         'sign-in',
+      routeAfterAuthentication:    'home',
+      routeIfAlreadyAuthenticated: 'home'
+    },
   };
 
   if (environment === 'development') {
