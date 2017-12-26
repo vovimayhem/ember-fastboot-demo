@@ -9,6 +9,8 @@ const Router = EmberRouter.extend({
 Router.map(function() {
   this.route('auth-callback', { path: '/auth/:provider/callback' });
   this.route('home', { path: '/' });
+  this.route('sign-in');
+  this.route('other');
 });
 
 export default Router;

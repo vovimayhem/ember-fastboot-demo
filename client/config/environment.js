@@ -30,6 +30,10 @@ module.exports = function(environment) {
       routeAfterAuthentication:    'home',
       routeIfAlreadyAuthenticated: 'home'
     },
+
+    fastboot: {
+      hostWhitelist: ['example.com', 'subdomain.example.com', /^localhost:\d+$/]
+    }
   };
 
   if (environment === 'development') {
