@@ -10,4 +10,5 @@ Rails.application.routes.draw do
     controllers token_info: 'oauth/token_info'
   end
 
+  root to: 'home#show'
 end
