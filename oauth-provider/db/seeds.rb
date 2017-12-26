@@ -15,7 +15,7 @@ demo_app_user = User.create_with(
 
 demo_app_create_attributes = {
   uid: ENV.fetch('DEMO_API_KEY', 'cb6469c69024696907215d7f3bedcc7880a5de16833945639d81b48b8d98a098'),
-  redirect_uri: 'http://localhost:4200/auth/directory/callback',
+  redirect_uri: 'http://localhost:4200/auth/demo/callback',
   trusted: true,
   owner: demo_app_user
 }
