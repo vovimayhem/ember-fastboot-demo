@@ -1,0 +1,105 @@
+version: '3.1'
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:
+  frontend:
+
+services:
+  postgres:
+    image: postgres:10.1-alpine
+    ports:
+      # We'll bind our host's port 5440 to postgres's port 5432, so we can use our database IDEs
+      # with it:
+      - ${DEMO_POSTGRES_PORT:-5440}:5432
+    networks:
+      - backend
+    environment:
+      POSTGRES_PASSWORD: 3x4mpl3
+
+  oauth_provider_test: &oauth_provider_app
+    labels:
+      com.icalialabs.plis.group: test
+    build:
+      context: ./oauth-provider
+      dockerfile: dev.Dockerfile
+    image: icalialabs/ember-fastboot-demo-oauth-provider:development
+    entrypoint: /usr/src/bin/entrypoint-dev
+    volumes:
+      # Mount our app code directory ("./oauth-provider") into our app containers at the
+      # "/usr/src" folder:
+      - ./oauth-provider:/usr/src
+
+    networks: [ "backend" ]
+
+    # Keep the stdin open, so we can attach to our app container's process
+    # and do things such as byebug, etc:
+    stdin_open: true
+
+    # Enable sending signals (CTRL+C, CTRL+P + CTRL+Q) into the container:
+    tty: true
+
+    depends_on:
+      - postgres
+
+    command: guard
+
+    environment: &oauth_provider_app_env
+      # URL to connect to the database:
+      DATABASE_URL: postgres://postgres:3x4mpl3@postgres:5432/demo_test
+
+      RAILS_ENV: test
+      RACK_ENV: test
+      RAILS_LOG_TO_STDOUT: "true"
+
+  oauth_provider_web:
+    <<: *oauth_provider_app
+    labels:
+      com.icalialabs.plis.group: backend restapi
+    command: rails server -p 3000 -b 0.0.0.0
+    ports:
+      - ${DEMO_OAUTH_PROVIDER_WEB_PORT:-3000}:3000
+    environment:
+      <<: *oauth_provider_app_env
+      # Override the URL for the development database - we'll use oauth_provider_development:
+      DATABASE_URL: postgres://postgres:3x4mpl3@postgres:5432/demo_development
+      RAILS_ENV: development
+      RACK_ENV: development
+
+  # # ================================================================================================
+  # # Containers / Services for the Web UI App:
+  # web_test: &web_app
+  #   labels:
+  #     com.icalialabs.plis.group: test
+  #   build:
+  #     context: ./web-ui
+  #     dockerfile: dev.Dockerfile
+  #   image: icalialabs/ember-fastboot-demo-oauth-provider:development
+  #   volumes:
+  #     # Mount our app code directory (".") into our app containers at the "/usr/src" folder:
+  #     - ./web-ui:/usr/src
+  #   entrypoint: /usr/src/bin/entrypoint-dev
+  #   command: ember test --server
+  #   ports:
+  #     - ${DEMO_WEB_TEST_PORT:-7357}:7357
+  #   environment: &web_env
+  #     DIRECTORY_URL: ${DIRECTORY_URL:-http://localhost:4201}
+  #     INVENTORY_URL: ${INVENTORY_URL:-http://localhost:4202}
+  #     MATERIAL_INVENTORY_URL: ${MATERIAL_INVENTORY_URL:-http://localhost:4201}
+  #     MATERIAL_PROCESSING_URL: ${MATERIAL_PROCESSING_URL:-http://localhost:4202}
+  #     MATERIAL_IO_URL: ${MATERIAL_IO_URL:-http://localhost:4203}
+  #     OLD_HAWKEYE_URL: ${OLD_HAWKEYE_URL:-http://localhost:3000}
+  #     WELL_DATA_URL: ${WELL_DATA_URL:-http://localhost:3001}
+  #
+  # web:
+  #   <<: *web_app
+  #   command: ember server --live-reload-port 35730
+  #   ports:
+  #     - ${HAWKEYE_WEB_PORT:-4200}:4200
+  #     - ${HAWKEYE_WEB_LIVE_RELOAD_PORT:-35730}:35730
+  #   stdin_open: true
+  #   tty: true
+  #   labels:
+  #     com.icalialabs.plis.group: frontend
