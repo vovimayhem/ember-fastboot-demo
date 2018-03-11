@@ -13,11 +13,23 @@
 ehthumbs.db
 Thumbs.db
 
+# Ignore bundler config.
+/.bundle
+
+# Ignore node modules
+node_modules
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
 # Ignore Byebug/Bash/etc command history file.
-.*_hist*
+/.*_hist*
 
 # Ignore vim history file:
-.viminfo
+/.viminfo
 
 # Ignore dotenv files, but not the dotenv examples:
 *.env
@@ -25,9 +37,18 @@ Thumbs.db
 
 # Ignore IDE's and text editor artifacts:
 *.swp
-.vscode
 
-# Ignore environment artifacts resulting from the
-# fact we're setting the project folders as home
-# directories:
-frontend/.config
+# Ignore RSpec example status persistence file:
+examples.txt
+
+# Ignore database dump files:
+/db/dumps/*
+!/db/dumps/README.md
+!/db/dumps/remote-dump
+
+# Ignore test coverage reports:
+/coverage/*
+
+# Ignore auto-generated documentation:
+docs/**/*.apib
+docs/**/*.html

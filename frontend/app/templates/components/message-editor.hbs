@@ -1,0 +1,7 @@
+{{#if session.isAuthenticated}}
+  {{textarea value=message}}
+  <button {{action "doSend"}}>Send</button>
+{{else}}
+  {{#link-to "sign-in"}}Sign In{{/link-to}} to begin posting messages.
+{{/if}}
+{{yield}}

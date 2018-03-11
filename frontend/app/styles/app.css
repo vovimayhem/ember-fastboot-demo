@@ -1,0 +1,36 @@
+body {
+  margin: 0;
+}
+
+body > .ember-view  {
+  padding-top: 3em;
+  padding-bottom: 4em;
+}
+
+body > .ember-view > nav.navbar {
+  background-color: #333333;
+  color: #CCCCCC;
+  height: 3em;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  display: flex;
+}
+
+body > .ember-view > nav.navbar .navbar-nav > li {
+  display: inline;
+}
+
+body > .ember-view > nav.navbar a {
+  color: #CCCCCC;
+}
+
+body > .ember-view > .message-editor {
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  background: #EEE;
+  margin: 0;
+  padding: 0;
+  height: 4em;
+}
