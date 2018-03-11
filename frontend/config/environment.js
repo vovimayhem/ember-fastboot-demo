@@ -22,6 +22,12 @@ module.exports = function(environment) {
       // when it is created
       demoApiKey: '3c8466708b1438f03825764d1efa0077b830667bb6fa17ff75104c1a6b8fb528',
       demoBackendUrl: (process.env.DEMO_BACKEND_URL || 'http://localhost:3000'),
+
+      // Used to query the backend from the FastBoot process whenever the access to the backend
+      // RESTAPI is available on an alternate URL (i.e. different secured network)
+      demoBackendUrlOnBackend: process.env.DEMO_BACKEND_URL_ON_BACKEND,
+
+      // OAuth URL:
       demoOAuthUrl: (process.env.DEMO_OAUTH_URL || 'http://localhost:3000/oauth'),
     },
 
