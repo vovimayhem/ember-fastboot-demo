@@ -12,7 +12,8 @@ RUN set -ex && apk add --no-cache yarn openssl && npm install -g ember-cli
 
 # From this point on, we'll deviate from the deployable Dockerfile's builder image:
 
-# 5: Install Chromium to run browser tests in the container, and the npm check-dependencies package:
+# 5: Install Chromium >= 59 to run browser tests in the container, and the npm check-dependencies
+# package:
 RUN set -ex && \
   apk add --no-cache chromium --repository http://dl-cdn.alpinelinux.org/alpine/edge/community && \
   npm install -g check-dependencies
