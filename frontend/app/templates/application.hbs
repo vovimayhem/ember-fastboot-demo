@@ -1,0 +1,15 @@
+<nav class="navbar">
+  {{#link-to "messages" class="navbar-brand"}}Demo: Chatroom{{/link-to}}
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        {{#link-to "messages" class="nav-link"}}Home{{/link-to}}
+      </li>
+      <li class="nav-item">
+        {{#link-to "members-area" class="nav-link"}}Members Area{{/link-to}}
+      </li>
+    </ul>
+  </div>
+</nav>
+{{outlet}}

@@ -1,0 +1,42 @@
+#! /bin/sh
+
+# The Docker App Container's development entrypoint.
+# This is a script used by the project's Docker development environment to
+# install the app dependencies automatically upon runnning.
+set -e
+
+: ${APP_PATH:="/usr/src"}
+: ${APP_TEMP_PATH:="$APP_PATH/tmp"}
+: ${APP_SETUP_LOCK:="$APP_TEMP_PATH/setup.lock"}
+: ${APP_SETUP_WAIT:="5"}
+
+# 1: Define the functions lock and unlock our app containers setup processes:
+lock_setup() { mkdir -p $APP_TEMP_PATH && touch $APP_SETUP_LOCK; }
+unlock_setup() { rm -rf $APP_SETUP_LOCK; }
+wait_setup() { echo "Waiting for app setup to finish..."; sleep $APP_SETUP_WAIT; }
+
+# 2: 'Unlock' the setup process if the script exits prematurely:
+trap unlock_setup HUP INT QUIT KILL TERM EXIT
+
+# 3: Specify a default command, in case it wasn't issued:
+if [ -z "$1" ]; then set -- ember server --live-reload-port 35730 "$@"; fi
+
+# 4: Run the setup routine if the command is 'ember':
+if [[ "$1" = "ember" ]]
+then
+  # 5: Wait until the setup 'lock' file no longer exists:
+  while [ -f $APP_SETUP_LOCK ]; do wait_setup; done
+
+  # 6: 'Lock' the setup process, to prevent a race condition with
+  # another container trying to install dependencies:
+  lock_setup
+
+  # 7: Check or install npm/bower dependencies:
+  check-dependencies || yarn install
+
+  # 8: 'Unlock' the setup process:
+  unlock_setup
+fi
+
+# 9: Execute the given or default command:
+exec "$@"

@@ -1,0 +1,5 @@
+{{#each messages as |message|}}
+  {{yield message}}
+{{else}}
+  <li class="empty-list-message"><p>No messages on this demo yet.</p></li>
+{{/each}}

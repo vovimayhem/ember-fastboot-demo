@@ -1,0 +1,56 @@
+# Ignore version control files:
+.git/
+.gitignore
+
+# Ignore docker and environment files:
+Dockerfile
+dev.Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Ignore all dotenv files - we don't want any secret pushed inside a production image:
+**/*.env
+
+# Ignore log files:
+log/*.log
+
+# Ignore OS artifacts:
+**/.DS_Store
+
+# Ignore bash / IRB / Byebug history files
+.*_hist*
+
+# Ignore temp files - we'll allow dist files as they are needed for the production build:
+tmp
+
+# Ignore previous app builds:
+dist/
+
+# We won't be needing the README on the deploy-able image, do we?
+README.md
+
+# Also, the testem.js:
+testem.js
+
+# dependencies
+node_modules
+bower_components
+
+.bowerrc
+.editorconfig
+.ember-cli
+.jshintrc
+.travis.yml
+.watchmanconfig
+PROXY.md
+
+# misc
+.sass-cache
+connect.lock
+coverage/*
+libpeerconnection.log
+npm-debug.log
+testem.log
+tests
+
+bin/dev-entrypoint
