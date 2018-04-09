@@ -1,8 +1,8 @@
 // Allows mocking window.location.href on tests:
 import window from 'ember-window-mock';
-import ENV from '../config/environment';
 import Route from '@ember/routing/route';
 import { computed } from '@ember/object';
+import ENV from 'demo/config/environment';
 import { inject as service } from '@ember/service';
 
 // The UnauthenticatedRoute mixin will redirect the user to somewhere else **IF** the user is
