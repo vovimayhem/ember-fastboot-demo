@@ -61,6 +61,10 @@ module.exports = function(environment) {
 
     ENV.APP.rootElement = '#ember-testing';
     ENV.APP.autoboot = false;
+
+    ENV.APP.demoBackendUrl = 'http://backend.example.com';
+    ENV.APP.demoBackendUrlOnBackend = 'http://backend.example.com';
+    ENV.APP.demoOAuthUrl = 'http://backend.example.com/oauth';
   }
 
   if (environment === 'production') {
