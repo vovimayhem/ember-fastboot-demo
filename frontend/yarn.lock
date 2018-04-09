@@ -2529,6 +2529,13 @@ ember-source@~3.0.0:
     jquery "^3.2.1"
     resolve "^1.3.3"
 
+ember-window-mock@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/ember-window-mock/-/ember-window-mock-0.4.0.tgz#87316623dd1a1414b82b08bb018889a210be91bd"
+  dependencies:
+    broccoli-funnel "^2.0.1"
+    ember-cli-babel "^6.6.0"
+
 emojis-list@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
