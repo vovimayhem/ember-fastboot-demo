@@ -1,3 +1,5 @@
+// Allows mocking window.location.href on tests:
+import window from 'ember-window-mock';
 import ENV from '../config/environment';
 import Route from '@ember/routing/route';
 import { computed } from '@ember/object';
