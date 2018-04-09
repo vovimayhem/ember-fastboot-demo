@@ -1,13 +1,23 @@
-import yadda from '../../helpers/yadda';
-import { visit } from '@ember/test-helpers';
+import yadda from 'demo/tests/helpers/yadda';
+import { visit, click } from '@ember/test-helpers';
 
 export default function(assert) {
   return yadda.localisation.default.library()
-    .given('I type "Ember g feature make-feature"', async function() {
-      await visit('/');
+    .given('I visit the "$page" page', async function(page) {
+      let testPage = `/${page}`;
+      if (testPage == '/home') { testPage = '/'; }
+      await visit(testPage);
       assert.ok(true, this.step);
     })
-    .when('I look in the folder', function() {
+    .when('I visit the "$page" page', async function(page) {
+      let testPage = `/${page}`;
+      if (testPage == '/home') { testPage = '/'; }
+      await visit(testPage);
+      assert.ok(true, this.step);
+    })
+    .when('I click on the "$linkName" link', async function(linkName) {
+      let selector = `.${linkName}`;
+      await click(selector);
       assert.ok(true, this.step);
     });
 }

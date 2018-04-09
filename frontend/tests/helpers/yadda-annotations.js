@@ -1,5 +1,9 @@
 import ENV from '../../config/environment';
 import { skip } from 'qunit';
+
+import { assertionInjector, assertionCleanup } from 'demo/tests/assertions';
+import { reset as windowReset } from 'ember-window-mock';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { setupApplicationTest, setupRenderingTest, setupTest } from 'ember-qunit';
 
 // this logic could be anything, but in this case...
@@ -61,7 +65,19 @@ function setupScenario(featureAnnotations, scenarioAnnotations) {
 
 function setupYaddaTest(annotations) {
   if (annotations.setupapplicationtest) {
-    return setupApplicationTest;
+    return function(hooks) {
+      setupApplicationTest(hooks);
+      setupMirage(hooks);
+
+      hooks.beforeEach(function() {
+        windowReset();
+        assertionInjector(this.owner.application);
+      });
+
+      hooks.afterEach(function() {
+        assertionCleanup(this.owner.application);
+      })
+    };
   }
   if (annotations.setuprenderingtest) {
     return setupRenderingTest;
