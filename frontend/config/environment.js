@@ -40,7 +40,11 @@ module.exports = function(environment) {
 
     fastboot: {
       hostWhitelist: ['example.com', 'subdomain.example.com', /^localhost:\d+$/]
-    }
+    },
+
+    'ember-cli-mirage' : {
+      enabled: false
+    },
   };
 
   if (environment === 'development') {
@@ -49,9 +53,11 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
+
   }
 
   if (environment === 'test') {
+
     // Testem prefers this...
     ENV.locationType = 'none';
 
@@ -65,6 +71,8 @@ module.exports = function(environment) {
     ENV.APP.demoBackendUrl = 'http://backend.example.com';
     ENV.APP.demoBackendUrlOnBackend = 'http://backend.example.com';
     ENV.APP.demoOAuthUrl = 'http://backend.example.com/oauth';
+
+    ENV['ember-cli-mirage'].enabled = true;
   }
 
   if (environment === 'production') {
