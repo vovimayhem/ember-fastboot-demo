@@ -18,20 +18,23 @@ module('Acceptance | home', function(hooks) {
   });
 
   test('visiting /', async function(assert) {
+    let testAuthor = this.server.create('user', { username: 'test-user' });
+    this.server.create('post', { author: testAuthor, body: 'Test Post Body' });
+
     await visit('/');
 
     assert.equal(currentURL(), '/', 'Is in the expected screen');
 
     assert.equal(
-      find('li.posted-message .author').textContent.trim(),
-      'vovimayhem',
-      'There is a post from the expected author'
+      find('li.posted-message .content').textContent.trim(),
+      'Test Post Body',
+      'Renders the example post'
     );
 
     assert.equal(
-      find('li.posted-message .content').textContent.trim(),
-      'Test Post Body',
-      'There is the expected post'
+      find('li.posted-message .author').textContent.trim(),
+      'test-user',
+      'Renders the author username from the example post'
     );
   });
 });

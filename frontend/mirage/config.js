@@ -26,44 +26,5 @@ export default function() {
     http://www.ember-cli-mirage.com/docs/v0.3.x/shorthands/
   */
 
-  this.get('/posts', () => {
-    return {
-      data:[
-        {
-          id : "1",
-          type : "post",
-          attributes : {
-            body : "Test Post Body",
-            "created-at" : "2018-04-09T19:49:26.713Z",
-            "updated-at" : "2018-04-09T19:49:26.713Z"
-          },
-          relationships : {
-            author : {
-              data : {
-                id : "1",
-                type : "user"
-              }
-            }
-          }
-        }
-      ],
-      included : [
-        {
-          id : "1",
-          type : "user",
-          attributes : {
-            username : "vovimayhem"
-          }
-        }
-      ],
-      links : {
-        first : "http://backend.example.com/posts?include=author\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0",
-        self  : "http://backend.example.com/posts?include=author",
-        last  : "http://backend.example.com/posts?include=author\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"
-      },
-      jsonapi : {
-        version : "1.0"
-      }
-    };
-  });
+  this.get('/posts');
 }
