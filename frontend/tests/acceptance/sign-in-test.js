@@ -1,12 +1,15 @@
 import { module, test } from 'qunit';
 import ENV from 'demo/config/environment';
+// https://github.com/emberjs/ember-test-helpers/blob/master/API.md
 import { visit, click } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { assertionInjector, assertionCleanup } from 'demo/tests/assertions';
 import { default as window, reset as windowReset } from 'ember-window-mock';
 
 module('Acceptance | sign in', function(hooks) {
   setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     windowReset();
