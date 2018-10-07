@@ -36,3 +36,39 @@ RUN npm install -g ember-cli -g check-dependencies
 
 # Paso 10: Definimos el comando default del contenedor:
 CMD ["ember", "server", "--live-reload-port", "35730"]
+
+# Etapa III: Compilador ("builder") ============================================
+# Paso 11: Comenzamos a partir de la etapa II:
+FROM development AS builder
+
+# Paso 12: Copiar las listas de dependencias de la aplicación:
+COPY package.json yarn.lock /usr/src/
+
+# Paso 13: Instalar las dependencias de desarrollo para compilar la aplicación:
+RUN yarn install
+
+# Paso 14: Copiar el resto del código fuente de la aplicación:
+COPY . /usr/src
+
+# Paso 15: Compilar la aplicación:
+RUN ember build --environment=production
+
+# Paso 16: Purgar las dependencias de desarrollo - dejar únicamente las
+# dependencias de operación (fastboot-app-server):
+RUN yarn install --production
+
+# Etapa IV: Operación ("release") ==============================================
+# Paso 17: Comenzar a partir de la etapa I:
+FROM runtime AS release
+
+# Paso 18: Copiar las dependencias que quedan de la etapa III:
+COPY --from=builder /usr/src/node_modules /usr/src/node_modules
+
+# Paso 19: Copiar la aplicación compilada de la etapa III:
+COPY --from=builder /usr/src/dist /usr/src/dist
+
+# Paso 20: Copiar el script de fastboot-server:
+COPY --from=builder /usr/src/fastboot-server.js /usr/src/server.js
+
+# Paso 21: Definir el comando default:
+CMD ["node", "server.js"]

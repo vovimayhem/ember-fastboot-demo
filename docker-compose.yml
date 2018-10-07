@@ -92,7 +92,7 @@ services:
   frontend_test: &frontend_app
     labels:
       com.icalialabs.plis.group: test
-    build:
+    build: &frontend_app_build
       context: ./frontend
       dockerfile: Dockerfile
       target: development
@@ -123,4 +123,24 @@ services:
       com.icalialabs.plis.group: demo frontend
     environment:
       <<: *frontend_env
+      DEMO_BACKEND_URL_ON_BACKEND: ${DEMO_BACKEND_URL_ON_BACKEND:-http://backend_web:3000}
+
+  frontend_web_benchmark:
+    image: vovimayhem/ember-fastboot-demo-frontend:latest
+    build:
+      <<: *frontend_app_build
+      target: release
+    networks:
+      - frontend
+    ports:
+      - ${DEMO_FRONTEND_WEB_BENCHMARK_PORT:-4201}:4201
+    depends_on:
+      - backend_web
+    stdin_open: true
+    tty: true
+    labels:
+      com.icalialabs.plis.group: demo frontend
+    environment:
+      <<: *frontend_env
+      PORT: 4201
       DEMO_BACKEND_URL_ON_BACKEND: ${DEMO_BACKEND_URL_ON_BACKEND:-http://backend_web:3000}
