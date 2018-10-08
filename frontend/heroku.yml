@@ -1,0 +1,7 @@
+# See https://devcenter.heroku.com/articles/docker-builds-heroku-yml
+build:
+  docker:
+    web: Dockerfile
+
+run:
+  web: node server.js
