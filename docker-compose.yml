@@ -137,7 +137,7 @@ services:
     networks:
       - frontend
     ports:
-      - ${DEMO_FRONTEND_WEB_BENCHMARK_PORT:-4201}:4201
+      - ${DEMO_FRONTEND_WEB_STAGING_PORT:-4201}:4201
     depends_on:
       - backend_web
     stdin_open: true
