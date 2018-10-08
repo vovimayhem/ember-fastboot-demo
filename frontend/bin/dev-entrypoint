@@ -15,6 +15,9 @@ lock_setup() { mkdir -p $APP_TEMP_PATH && touch $APP_SETUP_LOCK; }
 unlock_setup() { rm -rf $APP_SETUP_LOCK; }
 wait_setup() { echo "Waiting for app setup to finish..."; sleep $APP_SETUP_WAIT; }
 
+# Tunnels up the backend_web's port 3000 into localhost's port 3000:
+start_backend_tunnel() { socat tcp-listen:3000,reuseaddr,fork tcp:backend_web:3000 & }
+
 # 2: 'Unlock' the setup process if the script exits prematurely:
 trap unlock_setup HUP INT QUIT KILL TERM EXIT
 
@@ -22,7 +25,7 @@ trap unlock_setup HUP INT QUIT KILL TERM EXIT
 if [ -z "$1" ]; then set -- ember server --live-reload-port 35730 "$@"; fi
 
 # 4: Run the setup routine if the command is 'ember':
-if [[ "$1" = "ember" ]]
+if [ "$1" = "ember" ]
 then
   # 5: Wait until the setup 'lock' file no longer exists:
   while [ -f $APP_SETUP_LOCK ]; do wait_setup; done
@@ -36,6 +39,12 @@ then
 
   # 8: 'Unlock' the setup process:
   unlock_setup
+
+  if [ "$2" = "server" ] || [ "$2" = "serve" ] || [ "$2" = "s" ]
+  then
+    echo "Starting backend web tunnel..."
+    start_backend_tunnel
+  fi
 fi
 
 # 9: Execute the given or default command:
