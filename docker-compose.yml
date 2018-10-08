@@ -109,6 +109,8 @@ services:
 
   frontend_web:
     <<: *frontend_app
+    labels:
+      com.icalialabs.plis.group: dev
     command: ember server --live-reload-port 35730
     networks:
       - frontend
@@ -121,15 +123,20 @@ services:
     tty: true
     labels:
       com.icalialabs.plis.group: demo frontend
-    environment:
-      <<: *frontend_env
-      DEMO_BACKEND_URL_ON_BACKEND: ${DEMO_BACKEND_URL_ON_BACKEND:-http://backend_web:3000}
+    # environment:
+    #   <<: *frontend_env
+    #   DEMO_BACKEND_URL_ON_BACKEND: ${DEMO_BACKEND_URL_ON_BACKEND:-http://backend_web:3000}
 
-  frontend_web_benchmark:
+  frontend_web_staging:
     image: vovimayhem/ember-fastboot-demo-frontend:latest
     build:
       <<: *frontend_app_build
       target: release
+    entrypoint: ["/usr/src/bin/staging-entrypoint"]
+    volumes:
+      - type: bind
+        source: ./frontend/bin/staging-entrypoint
+        target: /usr/src/bin/staging-entrypoint
     networks:
       - frontend
     ports:
@@ -139,8 +146,7 @@ services:
     stdin_open: true
     tty: true
     labels:
-      com.icalialabs.plis.group: demo frontend
+      com.icalialabs.plis.group: demo staging
     environment:
       <<: *frontend_env
       PORT: 4201
-      DEMO_BACKEND_URL_ON_BACKEND: ${DEMO_BACKEND_URL_ON_BACKEND:-http://backend_web:3000}

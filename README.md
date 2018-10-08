@@ -38,14 +38,10 @@ yarn install && ember serve
 
 ## Notes
 
-* When running the frontend with Docker, you may notice that despite FastBoot is rendering the
-  initial HTML with the data it pulled from the backend, Ember is still repeating the data fetch
-  on the client side. This is caused by [`ember-cached-shoe`](https://github.com/Appchance/ember-cached-shoe)
-  using the fetch URL to generate the cache key, which won't match the fetch URL on the client, as
-  the backend RESTAPI is only accessible to FastBoot on a different URL (http://backend_web:3000).
-  You might use [ngrok.io](http://ngrok.io) to publish your localhost's port 3000 (which is binded
-  to the backend_web service) and change the `DEMO_BACKEND_URL` and `DEMO_BACKEND_URL_ON_BACKEND`
-  env vars (use a dotenv file `.env` at the root of this project) to point them to the ngrok.io url.
+* Notice how we use `socat` to tunnel the backend_web service to the frontend
+  containers' port 3000. This is used only for development with Docker purposes,
+  as the frontend containers see the backend service through a different
+  hostname than the client (`backend_web` vs `localhost`).
 
 * If trying to run the frontend locally *after running it previously with Docker*, you might need to
   remove the `frontend/dist` and `frontend/node_modules` before running `ember serve`, specially if
