@@ -39,7 +39,7 @@ module.exports = function(environment) {
     },
 
     fastboot: {
-      hostWhitelist: ['example.com', 'subdomain.example.com', /^localhost:\d+$/]
+      hostWhitelist: ['example.com', 'subdomain.example.com', 'localhost', /^localhost:\d+$/]
     },
 
     'ember-cli-mirage' : {

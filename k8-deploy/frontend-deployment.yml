@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-web
+  labels:
+    app: frontend-web
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend-web
+          image: vovimayhem/ember-fastboot-demo-frontend:v4
+          ports:
+            - containerPort: 4200
+              name: frontend-web
+          env:
+            - name: PORT
+              value: "4200"
+            - name: DEMO_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: demo_api_key
