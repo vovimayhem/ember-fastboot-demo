@@ -30,3 +30,8 @@ spec:
                 secretKeyRef:
                   name: backend-secrets
                   key: secret_key_base
+            - name: DEMO_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: demo_api_key
