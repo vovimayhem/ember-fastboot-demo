@@ -14,6 +14,8 @@ Dir["#{ENV.fetch('SECRETS_PATH', '/run/secrets/')}*"].each do |secret_filepath|
 end
 
 # Substitute the URL passwords with the ones stored on the *_PASS
+# DATABASE_URL: postgres://postgres@postgres.5432/demo_production
+# DATABASE_PASSWORD: lalito
 require 'uri' if (url_keys = ENV.keys.select { |key| key =~ /_URL/ }).any?
 
 url_keys.each do |url_key|

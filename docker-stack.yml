@@ -1,0 +1,68 @@
+version: '3.4'
+
+networks:
+  backend:
+  frontend:
+
+secrets:
+  # El secret fué creado previamente con 'docker secret create':
+  # echo -n "3x4mpl3P455" | docker secret create demo_database_password -
+  demo_database_password:
+    external: true
+  # echo -n "0653bfb14b9973972cc3961dba46e3cb34df55e3adb4732d218a661f937c5c75d1814b3da3813e735a29851769c13fa8a592ad361a7f558c59690120bcb084ac" | docker secret create demo_secret_key_base -
+  demo_secret_key_base:
+    external: true
+
+services:
+  postgres:
+    image: postgres:10-alpine
+    ports:
+      # We'll bind our host's port 5432 (which can be changed with the
+      # DEMO_PGPORT variable using a dotenv file) to postgres's port 5432, so
+      # we can use our database IDEs with it:
+      - ${DEMO_PGPORT:-5432}:5432
+    networks:
+      - backend
+    secrets:
+      - source: demo_database_password
+        target: POSTGRES_PASSWORD
+
+  backend-web:
+    image: vovimayhem/ember-fastboot-demo-backend:v3
+    networks:
+      - backend
+
+    # Keep the stdin open, so we can attach to our app container's process
+    # and do things such as byebug, etc:
+    stdin_open: true
+
+    # Enable sending signals (CTRL+C, CTRL+P + CTRL+Q) into the container:
+    tty: true
+
+    depends_on:
+      - postgres
+
+    secrets:
+      - source: demo_database_password
+        target: database_password
+      - source: demo_secret_key_base
+        target: secret_key_base
+
+    environment: &backend_app_env
+      # URL to connect to the database:
+      DATABASE_URL: postgres://postgres@postgres:5432/demo_production
+      SECRET_KEY_BASE: 0653bfb14b9973972cc3961dba46e3cb34df55e3adb4732d218a661f937c5c75d1814b3da3813e735a29851769c13fa8a592ad361a7f558c59690120bcb084ac
+      RAILS_LOG_TO_STDOUT: "true"
+  #
+  # # ================================================================================================
+  # # Containers / Services for the Frontend App:
+  # frontend-web:
+  #   image: vovimayhem/ember-fastboot-demo-frontend:v4
+  #   ports:
+  #     - ${DEMO_FRONTEND_WEB_STAGING_PORT:-4200}:4200
+  #   depends_on:
+  #     - backend_web
+  #   stdin_open: true
+  #   tty: true
+  #   environment:
+  #     PORT: 4200
