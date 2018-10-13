@@ -20,7 +20,7 @@ services:
       # We'll bind our host's port 5432 (which can be changed with the
       # DEMO_PGPORT variable using a dotenv file) to postgres's port 5432, so
       # we can use our database IDEs with it:
-      - ${DEMO_PGPORT:-5432}:5432
+      - 5432:5432
     networks:
       - backend
     secrets:
@@ -28,9 +28,10 @@ services:
         target: POSTGRES_PASSWORD
 
   backend-web:
-    image: vovimayhem/ember-fastboot-demo-backend:v3
+    image: vovimayhem/ember-fastboot-demo-backend:v4
     networks:
       - backend
+      - frontend
 
     # Keep the stdin open, so we can attach to our app container's process
     # and do things such as byebug, etc:
@@ -41,6 +42,12 @@ services:
 
     depends_on:
       - postgres
+
+    ports:
+      # We'll bind our host's port 5432 (which can be changed with the
+      # DEMO_PGPORT variable using a dotenv file) to postgres's port 5432, so
+      # we can use our database IDEs with it:
+      - 3000:3000
 
     secrets:
       - source: demo_database_password
@@ -53,16 +60,18 @@ services:
       DATABASE_URL: postgres://postgres@postgres:5432/demo_production
       SECRET_KEY_BASE: 0653bfb14b9973972cc3961dba46e3cb34df55e3adb4732d218a661f937c5c75d1814b3da3813e735a29851769c13fa8a592ad361a7f558c59690120bcb084ac
       RAILS_LOG_TO_STDOUT: "true"
-  #
-  # # ================================================================================================
-  # # Containers / Services for the Frontend App:
-  # frontend-web:
-  #   image: vovimayhem/ember-fastboot-demo-frontend:v4
-  #   ports:
-  #     - ${DEMO_FRONTEND_WEB_STAGING_PORT:-4200}:4200
-  #   depends_on:
-  #     - backend_web
-  #   stdin_open: true
-  #   tty: true
-  #   environment:
-  #     PORT: 4200
+
+  # ================================================================================================
+  # Containers / Services for the Frontend App:
+  frontend-web:
+    image: vovimayhem/ember-fastboot-demo-frontend:v4
+    networks:
+      - frontend
+    ports:
+      - 4200:4200
+    depends_on:
+      - backend-web
+    stdin_open: true
+    tty: true
+    environment:
+      PORT: 4200

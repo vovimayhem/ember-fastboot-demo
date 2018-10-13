@@ -1,6 +1,9 @@
 # Reads the specified secret paths (i.e. Docker Secrets) into environment
 # variables:
 
+require 'active_support'
+require 'active_support/core_ext/object'
+
 # Process only a known list of env vars that can filled by reading a file (i.e.
 # a docker secret):
 Dir["#{ENV.fetch('SECRETS_PATH', '/run/secrets/')}*"].each do |secret_filepath|
