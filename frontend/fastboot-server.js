@@ -4,7 +4,16 @@ const FastBootAppServer = require('fastboot-app-server');
 const DIST_PATH = 'dist';
 const PORT = parseInt(process.env.PORT || '3000');
 
-ReconfigureApp.fromProcessEnv('demo', DIST_PATH);
+const ENV_PROCESSING = {
+  ENV_MAPPING: {
+    HOST_WHITELIST: 'fastboot',
+  },
+  ENV_TRANSFORM: {
+    HOST_WHITELIST: ['split', ' ']
+  }
+};
+
+ReconfigureApp.fromProcessEnv(DIST_PATH, ENV_PROCESSING);
 
 let server = new FastBootAppServer({
   distPath: DIST_PATH,
