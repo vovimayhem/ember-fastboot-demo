@@ -15,13 +15,13 @@ export default Route.extend(UnauthenticatedRoute, {
   fastboot: service(),
 
   authUrl: computed('fastboot.request.{host,protocol}', function() {
-    const { demoOAuthUrl, demoApiKey } = ENV.APP;
+    const { demoBackendUrl, demoApiKey } = ENV.APP;
     const host = (this.get('fastboot.request.host') || window.location.host || 'localhost:4200');
     const protocol = (this.get('fastboot.request.protocol') || window.location.protocol || 'https:');
     const redirectUri = `${protocol}//${host}/auth/demo/callback`;
 
     const params = `response_type=token&client_id=${demoApiKey}&redirect_uri=${encodeURIComponent(redirectUri)}`;
-    return `${demoOAuthUrl}/authorize?${params}`;
+    return `${demoBackendUrl}/oauth/authorize?${params}`;
   }),
 
   beforeModel() {

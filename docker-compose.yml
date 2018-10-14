@@ -147,3 +147,4 @@ services:
     environment:
       <<: *frontend_env
       PORT: 4201
+      DEMO_BACKEND_URL: 'http://backend.example.com:3000'
