@@ -9,7 +9,7 @@ demo_api_key = ENV.fetch('DEMO_API_KEY', '3c8466708b1438f03825764d1efa0077b83066
 demo_api_secret = ENV['DEMO_API_SECRET']
 demo_app_create_attributes = {
   uid: demo_api_key,
-  redirect_uri: 'http://localhost:4200/auth/demo/callback',
+  redirect_uri: ENV.fetch('DEMO_FRONTEND_AUTH_CALLBACKS', 'http://localhost:4200/auth/demo/callback'),
   trusted: true
 }
 demo_app_create_attributes[:secret] = demo_api_secret if demo_api_secret.present?

@@ -86,6 +86,10 @@ services:
       DATABASE_URL: postgres://postgres:3x4mpl3P455w0rd@postgres:5432/demo_development
       RAILS_ENV: development
       RACK_ENV: development
+      # Only used when running 'rails db:setup' or 'rails db:seed' for the first time:
+      DEMO_FRONTEND_AUTH_CALLBACKS: | # Starts a multiline value:
+        http://${DEMO_FRONTEND_WEB_HOST:-localhost}:${DEMO_FRONTEND_WEB_PORT:-4200}/auth/demo/callback
+        http://${DEMO_FRONTEND_WEB_STAGING_HOST:-localhost}:${DEMO_FRONTEND_WEB_STAGING_PORT:-4201}/auth/demo/callback
 
   # ================================================================================================
   # Containers / Services for the Frontend App:
