@@ -10,7 +10,7 @@ WORKDIR /usr/src
 
 # Step 4: Add the runtime packages (needed for the app to run) using Alpine's
 # package manager:
-RUN apk add --no-cache ca-certificates less libpq openssl tzdata
+RUN apk add --no-cache ca-certificates less libpq nodejs openssl tzdata
 
 # Stage II: Development ========================================================
 # Step 5: Use the "runtime" stage as the starting point:
@@ -22,7 +22,6 @@ RUN apk add --no-cache \
   chromium \
   chromium-chromedriver \
   git \
-  nodejs \
   postgresql-dev
 
 # Step 7: Copy the project's Gemfile:

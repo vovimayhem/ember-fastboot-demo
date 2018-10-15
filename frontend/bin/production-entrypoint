@@ -1,0 +1,16 @@
+#! /bin/sh
+
+# The Docker App Container's staging entrypoint.
+# This is a script used by the project's Docker development environment to
+# setup the tunnel to the backend's web service, so Ember Fastboot sees the
+# backend at 'localhost:3000':
+set -e
+
+# Specify a default command, in case it wasn't issued:
+if [ -z "$1" ]; then set -- node /usr/src/server.js "$@"; fi
+
+# Tunnel up the backend_web's port 3000 into localhost's port 3000:
+socat tcp-listen:3000,reuseaddr,fork tcp:backend-web:3000 &
+
+# 9: Execute the given or default command:
+exec "$@"

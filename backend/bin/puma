@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require_relative '../config/read_secret_files'
+
+require 'puma/cli'
+
+cli = Puma::CLI.new ARGV
+cli.run
