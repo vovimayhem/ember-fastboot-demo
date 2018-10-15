@@ -10,15 +10,7 @@ export default DS.JSONAPIAdapter.extend(CachedShoe, DataAdapterMixin, {
   fastboot: service(),
 
   host: computed('fastboot.isFastBoot', function() {
-    const hostUrlForClient = ENV.APP.demoBackendUrl;
-    const hostUrlForBackend = ENV.APP.demoBackendUrlOnBackend;
-
-    let hostUrl = hostUrlForClient;
-    if (this.get('fastboot.isFastBoot') && isPresent(hostUrlForBackend)) {
-      hostUrl = hostUrlForBackend;
-    }
-
-    return hostUrl || 'http://localhost:3000';
+    return ENV.APP.demoBackendUrl;
   }),
 
   authorizer: 'authorizer:demo'

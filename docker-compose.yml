@@ -137,7 +137,7 @@ services:
     networks:
       - frontend
     ports:
-      - ${DEMO_FRONTEND_WEB_STAGING_PORT:-4201}:4201
+      - ${DEMO_FRONTEND_WEB_STAGING_PORT:-4201}:4200
     depends_on:
       - backend_web
     stdin_open: true
@@ -146,4 +146,5 @@ services:
       com.icalialabs.plis.group: demo staging
     environment:
       <<: *frontend_env
-      PORT: 4201
+      HOST_WHITELIST: ${DEMO_FRONTEND_WEB_STAGING_HOST:-localhost}:${DEMO_FRONTEND_WEB_STAGING_PORT:-4201}
+      

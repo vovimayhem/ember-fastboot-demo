@@ -7,7 +7,7 @@
 set -e
 
 # Specify a default command, in case it wasn't issued:
-if [ -z "$1" ]; then set -- node /usr/src/server.js "$@"; fi
+if [ -z "$1" ]; then set -- node /usr/src/fastboot-server.js "$@"; fi
 
 # Tunnel up the backend_web's port 3000 into localhost's port 3000:
 socat tcp-listen:3000,reuseaddr,fork tcp:backend_web:3000 &

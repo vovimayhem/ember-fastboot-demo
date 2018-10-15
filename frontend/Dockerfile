@@ -73,11 +73,7 @@ COPY --from=builder /usr/src/node_modules /usr/src/node_modules
 COPY --from=builder /usr/src/dist /usr/src/dist
 
 # Paso 21: Copiar el script de fastboot-server:
-COPY --from=builder /usr/src/fastboot-server.js /usr/src/server.js
+COPY --from=builder /usr/src/fastboot-server.js /usr/src/reconfigure-app.js /usr/src/
 
-# Paso 22: Copiar el Entrypoint:
-COPY ./bin/production-entrypoint /usr/src/bin/entrypoint
-ENTRYPOINT [ "/usr/src/bin/entrypoint" ]
-
-# Paso 23: Definir el comando default:
-CMD ["node", "server.js"]
+# Paso 22: Definir el comando default:
+CMD ["node", "fastboot-server.js"]
