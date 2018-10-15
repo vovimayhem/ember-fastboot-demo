@@ -1,5 +1,6 @@
 const FS = require('fs');
 const Cheerio = require('cheerio');
+const Path = require('path');
 
 function keyToEnvVarName(key){
   return key
@@ -8,7 +9,8 @@ function keyToEnvVarName(key){
     .replace(/O_AUTH/, 'OAUTH');
 }
 
-function loadDOM(indexFilePath) {
+function loadDOM(filePath) {
+  const indexFilePath = getBackupOrFilePath(filePath);
   const contents = FS.readFileSync(indexFilePath, 'utf8');
   return Cheerio.load(contents);
 }
@@ -23,13 +25,9 @@ function updateEnvConfigNode(envConfigNode, envConfig) {
   envConfigNode.attr('content', metaContent);
 }
 
-function writeUpdatedDOM(updatedDOM, indexFilePath) {
-  FS.writeFileSync(indexFilePath, updatedDOM.html(), 'utf8');
-}
-
 // Loads the ${DIST_PATH}/package.json into an object:
 function loadDistPackage(distPath) {
-  const packageFilePath = `${distPath}/package.json`;
+  const packageFilePath = getBackupOrFilePath(`${distPath}/package.json`);
   const dataString = FS.readFileSync(packageFilePath, 'utf8');
   return JSON.parse(dataString);
 }
@@ -54,6 +52,12 @@ function processConfigWithEnv(config, ENV_PROCESSING) {
 function writeConfigToPackage(config, distPath) {
   const configString = JSON.stringify(config);
   const packageFilePath = `${distPath}/package.json`;
+  const packageFileBackupPath = `${distPath}/package.bak`;
+  
+  if (!FS.existsSync(packageFileBackupPath)) {
+    FS.copyFileSync(packageFilePath, packageFileBackupPath);
+  }
+  
   FS.writeFileSync(packageFilePath, configString, 'utf8');
 }
 
@@ -61,12 +65,32 @@ function writeAppEnvToIndex(config, distPath) {
   const { appName } = config.fastboot;
   const appEnvConfig = config.fastboot.config[appName];
 
-  const indexFilePath = `${distPath}/index.html`;
-  const appDOM = loadDOM(indexFilePath);
+  const filePath = `${distPath}/index.html`;
+  const appDOM = loadDOM(filePath);
+
   const envConfigNode = getEnvConfigNode(appName, appDOM);
   
   updateEnvConfigNode(envConfigNode, appEnvConfig);
-  writeUpdatedDOM(appDOM, indexFilePath);
+  writeFileWithBackup(filePath, appDOM.html(), 'utf8');
+}
+
+function getBackupPath(filePath) {
+  const dirName = Path.dirname(filePath);
+  const fileExt = Path.extname(filePath);
+  const fileBase = Path.basename(filePath, fileExt);
+  return `${dirName}/${fileBase}.bak`;
+}
+
+function getBackupOrFilePath(filePath) {
+  const backupPath = getBackupPath(filePath);
+  if (FS.existsSync(backupPath)) return backupPath;
+  return filePath;
+}
+
+function writeFileWithBackup(filePath, contents, encoding) {
+  const backupPath = getBackupPath(filePath);
+  if (!FS.existsSync(backupPath)) FS.copyFileSync(filePath, backupPath);
+  FS.writeFileSync(filePath, contents, encoding);
 }
 
 module.exports = {
