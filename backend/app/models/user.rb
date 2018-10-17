@@ -5,8 +5,9 @@ class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true
 
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable, :rememberable, :trackable, :validatable
+  # :confirmable, :lockable, :timeoutable, :recoverable and :omniauthable
+  devise :database_authenticatable, :registerable, :rememberable,
+         :trackable, :validatable
 
   define_method(:email_required?) { false }
   define_method(:email_changed?) { false }

@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180309044512) do
+ActiveRecord::Schema.define(version: 2018_03_09_044512) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "oauth_access_grants", force: :cascade, comment: "Accesses granted" do |t|
+  create_table "oauth_access_grants", comment: "Accesses granted", force: :cascade do |t|
     t.bigint "resource_owner_id", null: false
     t.bigint "application_id", null: false
     t.string "token", null: false
@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(version: 20180309044512) do
     t.index ["token"], name: "UK_oauth_access_grant_token", unique: true
   end
 
-  create_table "oauth_access_tokens", force: :cascade, comment: "Access tokens granted to users or apps" do |t|
+  create_table "oauth_access_tokens", comment: "Access tokens granted to users or apps", force: :cascade do |t|
     t.bigint "resource_owner_id"
     t.bigint "application_id"
     t.string "token", null: false
@@ -46,13 +46,14 @@ ActiveRecord::Schema.define(version: 20180309044512) do
     t.index ["token"], name: "UK_oauth_access_token", unique: true
   end
 
-  create_table "oauth_applications", force: :cascade, comment: "Applications granted access to the system" do |t|
+  create_table "oauth_applications", comment: "Applications granted access to the system", force: :cascade do |t|
     t.string "name", null: false
     t.string "uid", null: false
     t.string "secret", null: false
     t.text "redirect_uri", null: false
     t.string "scopes", default: "", null: false
     t.boolean "trusted", default: false, null: false
+    t.boolean "confidential", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["uid"], name: "IX_oauth_application_uid", unique: true
