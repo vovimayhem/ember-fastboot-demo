@@ -1,6 +1,6 @@
 # Stage I: Runtime =============================================================
 # Step 1: Start off from the ruby official image, alpine version:
-FROM ruby:2.4.3-alpine AS runtime
+FROM ruby:2.5.1-alpine AS runtime
 
 # Step 2: Set the home to the code path, and add the code executables to $PATH:
 ENV HOME=/usr/src PATH=/usr/src/bin:$PATH
