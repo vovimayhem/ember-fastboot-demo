@@ -12,6 +12,7 @@ volumes:
 networks:
   backend:
   frontend:
+  frontend_node_modules:
 
 services:
   postgres:
@@ -104,6 +105,8 @@ services:
     volumes:
       # Mount the frontend code directory into the container's "/usr/src" folder:
       - ./frontend:/usr/src
+      # Replace the mounted node modules folder with a volume:
+      - frontend_node_modules:/usr/src/node_modules
     entrypoint: /usr/src/bin/dev-entrypoint
     command: ember test --server
     ports:
@@ -151,4 +154,3 @@ services:
     environment:
       <<: *frontend_env
       HOST_WHITELIST: ${DEMO_FRONTEND_WEB_STAGING_HOST:-localhost}:${DEMO_FRONTEND_WEB_STAGING_PORT:-4201}
-      
