@@ -2,7 +2,8 @@
 * text=auto
 
 # Entrypoint shell scripts should use LF:
-*.sh text eol=lf
+/backend/bin/* text eol=lf
+/frontend/bin/* text eol=lf
 
 # Explicitly declare text files you want to always be normalized and converted
 # to native line endings on checkout.
