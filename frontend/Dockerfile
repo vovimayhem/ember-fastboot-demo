@@ -1,6 +1,6 @@
 # Etapa I: Dependencias de Ejecución ("runtime") ===============================
 # Paso 1: Comenzamos a partir de la imagen oficial de Node, versión 8-alpine:
-FROM node:8-alpine AS runtime
+FROM node:dubnium-alpine AS runtime
 
 # Paso 2: Definimos a la locación del proyecto como directorio de trabajo:
 WORKDIR /usr/src
@@ -20,12 +20,10 @@ FROM runtime AS development
 
 # Paso 6: Instalamos dependencias de desarrollo con el package manager de
 # Alpine:
-RUN apk add --no-cache yarn openssl
+RUN apk add --no-cache yarn openssl chromium
 
-# Paso 7: Instalamos chromium usando el administrador de paquetes de Alpine,
-# pero desde el repositorio "edge":
-RUN apk add --no-cache \
-  chromium --repository http://dl-cdn.alpinelinux.org/alpine/edge/community
+# Paso 7: Instalamos chromium usando el administrador de paquetes de Alpine:
+RUN apk add --no-cache chromium harfbuzz nss
 
 # Paso 8: Instalamos watchman copiando el ejecutable precompilado dentro de la
 # imagen de icalialabs/watchman:
