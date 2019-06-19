@@ -1,5 +1,7 @@
 version: v1.0
-name: First pipeline example
+
+name: Main Pipeline
+
 agent:
   machine:
     type: e1-standard-2
@@ -11,15 +13,22 @@ blocks:
       env_vars:
         - name: APP_ENV
           value: prod
+      prologue:
+        commands:
+          - checkout
       jobs:
         - name: Run Backend Tests
           commands:
-            - checkout
             - docker-compose --file .semaphore/ci-compose.yml run --rm backend_test
-            - docker image ls
         - name: Run Frontend Tests
           commands:
-            - checkout
             - docker-compose --file .semaphore/ci-compose.yml run --rm frontend_test
-            - docker image ls
   
+promotions:
+  - name: Production deploy
+    pipeline_file: production-deploy.yml
+    auto_promote_on:
+      - result: passed
+        branch:
+          - master
+          - feature/semaphore-ci
