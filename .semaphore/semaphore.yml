@@ -4,13 +4,6 @@ agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
-  
-# containers:
-#   - name: postgres
-#     image: postgres:10-alpine
-#     env_vars:
-#       - name: POSTGRES_PASSWORD
-#         value: 3x4mpl3P455w0rd
 
 blocks:
   - name: "Build"
@@ -22,8 +15,6 @@ blocks:
       - name: Docker build
         commands:
           - checkout
-          - "docker build --pull --rm 
-            --tag ember-fastboot-demo-backend:testing-build-${SEMAPHORE_BUILD_NUMBER:-local}
-            --target testing
-            ./backend"
+          - docker-compose run --rm backend_test rspec
+          - docker-compose run --rm frontend_test
   
