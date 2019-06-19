@@ -13,16 +13,22 @@ blocks:
       env_vars:
         - name: APP_ENV
           value: prod
+      secrets:
+        - name: AWS
       prologue:
         commands:
           - checkout
+          # Log in to AWS ECR:
+          - docker-compose --file .semaphore/ci-compose.yml run --rm aws_ecr_login | tr -d '\r' | bash
       jobs:
         - name: Run Backend Tests
           commands:
             - docker-compose --file .semaphore/ci-compose.yml run --rm backend_test
+            - docker image ls
         - name: Run Frontend Tests
           commands:
             - docker-compose --file .semaphore/ci-compose.yml run --rm frontend_test
+            - docker image ls
   
 promotions:
   - name: Production deploy

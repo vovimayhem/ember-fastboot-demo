@@ -14,6 +14,14 @@ networks:
   frontend:
 
 services:
+
+  aws_ecr_login:
+    image: xueshanf/awscli
+    command: aws ecr get-login --no-include-email --region eu-central-1
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+
   postgres:
     image: postgres:10-alpine
     ports:
