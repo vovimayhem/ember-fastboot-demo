@@ -50,6 +50,12 @@ services:
       RACK_ENV: test
       RAILS_LOG_TO_STDOUT: "true"
 
+  backend_release:
+    image: backend:latest
+    build:
+      <<: *backend_app_build
+      target: release
+
   frontend_test:
     build: &frontend_app_build
       context: ../frontend
@@ -60,3 +66,9 @@ services:
     environment:
       # Makes test suite use chromium instead of chrome inside this container:
       CI: "true"
+
+  frontend_release:
+    image: frontend:latest
+    build:
+      <<: *backend_app_build
+      target: release

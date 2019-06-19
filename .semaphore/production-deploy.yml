@@ -5,10 +5,18 @@ agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
+
 blocks:
   - name: Deploy
     task:
       jobs:
-        - name: 'Everything'
+        - name: Build Backend Image
           commands:
-            - echo 'Deploying to production!'
+            - docker-compose --file .semaphore/ci-compose.yml build backend_test
+            - docker-compose --file .semaphore/ci-compose.yml build backend_release
+            - docker image ls
+        - name: Build Frontend Image
+          commands:
+            - docker-compose --file .semaphore/ci-compose.yml build frontend_test
+            - docker-compose --file .semaphore/ci-compose.yml build frontend_release
+            - docker image ls
