@@ -1,10 +1,17 @@
 # Ignore version control files:
 .git/
 .gitignore
+.gitrepo
+
+# Ignore Github templates:
+.github/
+
+# Ignore hidden config folder:
+.codeclimate.yml
+.config
 
 # Ignore docker and environment files:
 Dockerfile
-dev.Dockerfile
 docker-compose.yml
 .dockerignore
 
@@ -26,12 +33,6 @@ tmp
 # Ignore previous app builds:
 dist/
 
-# We won't be needing the README on the deploy-able image, do we?
-README.md
-
-# Also, the testem.js:
-testem.js
-
 # dependencies
 node_modules
 bower_components
@@ -51,6 +52,12 @@ coverage/*
 libpeerconnection.log
 npm-debug.log
 testem.log
-tests
+
+# HOME folder artifacts:
+.config
+.local
+.npm
+.pki
+
 
 bin/dev-entrypoint
