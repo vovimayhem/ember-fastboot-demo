@@ -114,6 +114,9 @@ services:
     environment: &frontend_env
       DEMO_BACKEND_URL: ${DEMO_BACKEND_URL:-http://localhost:3000}
 
+      # Makes test suite use chromium instead of chrome inside this container:
+      CI: "true"
+
   frontend_web:
     <<: *frontend_app
     labels:
