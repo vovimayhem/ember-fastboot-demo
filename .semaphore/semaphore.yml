@@ -27,8 +27,10 @@ blocks:
         - name: Run Backend Tests
           commands:
             - docker-compose --file .semaphore/ci-compose.yml run --rm backend_test
+            - docker image ls
             - export IMAGE_TAG=${ECR_IMAGE_NAME_BASE}-backend:testing-${TAG_SAFE_BRANCH}
             - docker tag backend:testing ${IMAGE_TAG}
+            - docker image ls
             - docker push ${IMAGE_TAG}
         - name: Run Frontend Tests
           commands:
