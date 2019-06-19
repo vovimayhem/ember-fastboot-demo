@@ -67,6 +67,8 @@ services:
       context: ../frontend
       dockerfile: Dockerfile
       target: testing
+      cache_from:
+        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing-${TAG_SAFE_BRANCH:-master}
     image: frontend:testing
     command: ember test --launch chromium
     environment:
