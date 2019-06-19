@@ -13,6 +13,8 @@ blocks:
       env_vars:
         - name: APP_ENV
           value: prod
+        - name: ECR_IMAGE_NAME_BASE
+          value: 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo
       secrets:
         - name: AWS
       prologue:
@@ -24,7 +26,9 @@ blocks:
         - name: Run Backend Tests
           commands:
             - docker-compose --file .semaphore/ci-compose.yml run --rm backend_test
+            - docker tag backend:testing ${ECR_IMAGE_NAME_BASE}-backend:testing-$(echo ${SEMAPHORE_GIT_BRANCH} | tr '/' '-')
             - docker image ls
+            - docker push ${ECR_IMAGE_NAME_BASE}-backend:testing-$(echo ${SEMAPHORE_GIT_BRANCH} | tr '/' '-')
         - name: Run Frontend Tests
           commands:
             - docker-compose --file .semaphore/ci-compose.yml run --rm frontend_test
