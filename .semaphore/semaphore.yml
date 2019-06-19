@@ -5,12 +5,12 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
   
-  containers:
-    - name: postgres
-      image: postgres:10-alpine
-      env_vars:
-        - name: POSTGRES_PASSWORD
-          value: 3x4mpl3P455w0rd
+# containers:
+#   - name: postgres
+#     image: postgres:10-alpine
+#     env_vars:
+#       - name: POSTGRES_PASSWORD
+#         value: 3x4mpl3P455w0rd
 
 blocks:
   - name: "Build"
