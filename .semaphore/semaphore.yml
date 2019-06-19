@@ -6,7 +6,7 @@ agent:
     os_image: ubuntu1804
 
 blocks:
-  - name: "Build"
+  - name: "Build backend"
     task:
       env_vars:
         - name: APP_ENV
@@ -16,5 +16,15 @@ blocks:
         commands:
           - checkout
           - docker-compose run --rm backend_test rspec
-          - docker-compose run --rm frontend_test
+  
+  - name: "Build Frontend"
+    task:
+      env_vars:
+        - name: APP_ENV
+          value: prod
+      jobs:
+      - name: Docker build
+        commands:
+          - checkout
+          - docker-compose run --rm frontend_test ember test
   
