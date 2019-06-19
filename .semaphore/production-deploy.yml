@@ -9,6 +9,9 @@ agent:
 blocks:
   - name: Deploy
     task:
+      prologue:
+        commands:
+          - checkout
       jobs:
         - name: Build Backend Image
           commands:
