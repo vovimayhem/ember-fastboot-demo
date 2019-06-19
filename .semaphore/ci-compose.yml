@@ -1,10 +1,6 @@
-# The 2.4 spec is available for Docker versions >= 17.12.0, and it's great for
-# development in local environments (i.e. using `docker-compose` instead of
-# "swarm mode" commands like `docker stack deploy`), as it lets us specify
-# resource constraints such as memory limits on service containers. We can use
-# those constraints to replicate low-memory scenarios or debug memory usage in
-# our apps:
-version: '2.4'
+# We'll use the '3.x spec since it supports the 'cache_from'
+# option:
+version: '3.7'
 
 volumes:
   postgres_data:
