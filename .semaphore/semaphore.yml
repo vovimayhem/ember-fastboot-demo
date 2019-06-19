@@ -15,11 +15,11 @@ blocks:
         - name: Run Backend Tests
           commands:
             - checkout
-            - docker-compose run --rm backend_test rspec
+            - docker-compose --file .semaphore/ci-compose.yml run --rm backend_test
             - docker image ls
         - name: Run Frontend Tests
           commands:
             - checkout
-            - docker-compose run --rm frontend_test ember test
+            - docker-compose --file .semaphore/ci-compose.yml run --rm frontend_test
             - docker image ls
   
