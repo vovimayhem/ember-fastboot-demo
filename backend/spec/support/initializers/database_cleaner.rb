@@ -43,4 +43,6 @@ RSpec.configure do |config|
   config.append_after(:each) do
     DatabaseCleaner.clean
   end
+
+  DatabaseCleaner.allow_remote_database_url = URI(ENV['DATABASE_URL']).host == 'postgres'
 end

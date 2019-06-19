@@ -10,7 +10,7 @@ export default function(assert) {
     .then('I should be redirected to the "sign-in" page', function() {
       assert.stringStartsWith(
         mockedWindow.location.href,
-        `${ENV.APP.demoOAuthUrl}/authorize`,
+        `${ENV.APP.demoBackendUrl}/oauth/authorize`,
         this.step
       );
     });
