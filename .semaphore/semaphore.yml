@@ -16,8 +16,10 @@ blocks:
           commands:
             - checkout
             - docker-compose run --rm backend_test rspec
+            - docker image ls
         - name: Run Frontend Tests
           commands:
             - checkout
             - docker-compose run --rm frontend_test ember test
+            - docker image ls
   
