@@ -35,7 +35,7 @@ module.exports = function(environment) {
       hostWhitelist: [
         'example.com',
         'subdomain.example.com',
-        'vov-fastboot-demo-frontend.herokuapp.com',
+        'vovimayhem-ember-fastboot-demo.herokuapp.com',
         /^localhost:\d+$/
       ]
     },
