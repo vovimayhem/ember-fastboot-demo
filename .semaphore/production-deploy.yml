@@ -83,8 +83,12 @@ blocks:
       prologue:
         commands:
           - checkout
+          
           # Log in to AWS ECR:
           - docker-compose --file .semaphore/ci-compose.yml run --rm aws_ecr_login | tr -d '\r' | bash
+
+          # Log in to the Heroku Container Registry:
+          - heroku container:login
       jobs:
         - name: Deploy backend app
           commands:
@@ -92,12 +96,31 @@ blocks:
             
             # Pull the release image to use it as cache:
             - docker pull ${GIT_SHA_IMAGE_TAG} ; echo "Layer cache ready"
-
-            - docker tag ${GIT_SHA_IMAGE_TAG} backend:latest
             
             # Generate the 'web' Dockerfile:
-            - cd frontend && echo 'FROM backend:latest' >> Dockerfile.web && echo 'CMD [ "puma" ]'
+            - cd backend && echo "FROM ${GIT_SHA_IMAGE_TAG}" >> Dockerfile.web
 
-            - pwd
-
+            # Push the images:
             - heroku container:push --recursive --app vov-fastboot-demo-backend
+
+            # Release the images:
+            - heroku container:release web --app vov-fastboot-demo-backend
+
+            # Run migrations:
+            - heroku run rails db:migrate --app vov-fastboot-demo-backend
+        
+        - name: Deploy frontend app
+          commands:
+            - export GIT_SHA_IMAGE_TAG=${ECR_IMAGE_NAME_BASE}-frontend:${SEMAPHORE_GIT_SHA:0:7}
+            
+            # Pull the release image to use it as cache:
+            - docker pull ${GIT_SHA_IMAGE_TAG} ; echo "Layer cache ready"
+            
+            # Generate the 'web' Dockerfile:
+            - cd frontend && echo "FROM ${GIT_SHA_IMAGE_TAG}" >> Dockerfile.web
+
+            # Push the images:
+            - heroku container:push --recursive --app vov-fastboot-demo-frontend
+
+            # Release the images:
+            - heroku container:release web --app vov-fastboot-demo-frontend
