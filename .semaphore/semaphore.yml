@@ -47,4 +47,3 @@ promotions:
       - result: passed
         branch:
           - master
-          - feature/semaphore-ci
