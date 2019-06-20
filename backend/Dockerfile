@@ -33,12 +33,18 @@ RUN bundle install --jobs=4 --retry=3
 # Step 9: Set the default command for development images:
 CMD ["rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
-# Stage III: Builder ===========================================================
-# Pick off from development image:
-FROM development AS builder
+# III: Testing stage: ==========================================================
+# In this stage we'll add the current code from the project's source, so we can
+# run tests with the code.
+# Step 10: Start off from the "development" stage:
+FROM development AS testing
 
 # Copy the rest of the code:
 COPY . /usr/src
+
+# Stage IV: Builder ============================================================
+# Pick off from development image:
+FROM testing AS builder
 
 # Precompile assets:
 RUN DATABASE_URL=postgres://postgres@example.com:5432/fakedb \
@@ -50,9 +56,9 @@ RUN DATABASE_URL=postgres://postgres@example.com:5432/fakedb \
 RUN bundle config without development:test \
  && bundle clean
 
-# Stage 4: Release =============================================================
+# Stage V: Release ============================================================
 # Pick off from runtime image:
-FROM runtime AS deployable
+FROM runtime AS release
 
 # Copy the ruby libraries remaining after the cleanup:
 COPY --from=builder /usr/local/bundle /usr/local/bundle
@@ -64,4 +70,4 @@ COPY --from=builder /usr/src /usr/src
 ENV RAILS_ENV=production RACK_ENV=production PORT=3000
 
 # Set the default command for deployable images:
-CMD ["puma"]
+CMD [ "puma" ]

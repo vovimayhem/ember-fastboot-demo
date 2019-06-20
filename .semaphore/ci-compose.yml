@@ -1,0 +1,90 @@
+# We'll use the '3.x spec since it supports the 'cache_from'
+# option:
+version: '3.7'
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:
+  frontend:
+
+services:
+
+  aws_ecr_login:
+    image: xueshanf/awscli
+    command: aws ecr get-login --no-include-email --region eu-central-1
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+
+  postgres:
+    image: postgres:10-alpine
+    ports:
+      # We'll bind our host's port 5432 (which can be changed with the
+      # DEMO_PGPORT variable using a dotenv file) to postgres's port 5432, so
+      # we can use our database IDEs with it:
+      - ${DEMO_PGPORT:-5432}:5432
+    volumes:
+      # Mount the postgres data volume so the databases get persisted:
+      - type: volume
+        source: postgres_data
+        target: /var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: 3x4mpl3P455w0rd
+
+  backend_test:
+    image: backend:testing
+    build: &backend_app_build
+      context: ../backend
+      dockerfile: Dockerfile
+      target: testing
+      cache_from:
+        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing-${TAG_SAFE_BRANCH:-master}
+    
+    entrypoint: /usr/src/bin/dev-entrypoint
+
+    depends_on:
+      - postgres
+
+    command: rspec
+
+    environment:
+      # URL to connect to the database:
+      DATABASE_URL: postgres://postgres:3x4mpl3P455w0rd@postgres:5432/demo_test
+      RAILS_ENV: test
+      RACK_ENV: test
+      RAILS_LOG_TO_STDOUT: "true"
+
+  backend_release:
+    image: backend:latest
+    build:
+      <<: *backend_app_build
+      target: release
+      cache_from:
+        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing-${TAG_SAFE_BRANCH:-master}
+        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:${TAG_SAFE_BRANCH:-master}
+        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:latest
+
+  frontend_test:
+    build: &frontend_app_build
+      context: ../frontend
+      dockerfile: Dockerfile
+      target: testing
+      cache_from:
+        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing-${TAG_SAFE_BRANCH:-master}
+    image: frontend:testing
+    command: ember test --launch chromium
+    environment:
+      # Makes test suite use chromium instead of chrome inside this container:
+      CI: "true"
+
+  frontend_release:
+    image: frontend:latest
+    build:
+      <<: *frontend_app_build
+      target: release
+      cache_from:
+        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing-${TAG_SAFE_BRANCH:-master}
+        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:${TAG_SAFE_BRANCH:-master}
+        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:latest
