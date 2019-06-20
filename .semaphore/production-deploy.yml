@@ -55,7 +55,7 @@ blocks:
             - cd frontend && echo "FROM ${GIT_SHA_IMAGE_TAG}" >> Dockerfile.web
 
             # Push the images:
-            - heroku container:push --recursive --app vov-fastboot-demo-frontend
+            - heroku container:push --recursive --app vovimayhem-ember-fastboot-demo
 
             # Release the images:
-            - heroku container:release web --app vov-fastboot-demo-frontend
+            - heroku container:release web --app vovimayhem-ember-fastboot-demo
