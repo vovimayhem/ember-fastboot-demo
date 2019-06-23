@@ -10,7 +10,7 @@ module('Integration | Component | message-list', function(hooks) {
     // Set any properties with this.set('myProperty', 'value');
     // Handle any actions with this.set('myAction', function(val) { ... });
 
-    await render(hbs`{{message-list}}`);
+    await render(hbs`<MessageList />`);
 
     assert.equal(
       this.element.textContent.trim(),
@@ -19,9 +19,9 @@ module('Integration | Component | message-list', function(hooks) {
 
     // Template block usage:
     await render(hbs`
-      {{#message-list}}
+      <MessageList>
         template block text
-      {{/message-list}}
+      </MessageList>
     `);
 
     assert.equal(

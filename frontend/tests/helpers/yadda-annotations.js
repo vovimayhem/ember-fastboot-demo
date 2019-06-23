@@ -1,9 +1,9 @@
-import ENV from '../../config/environment';
+import ENV from 'ember-fastboot-demo/config/environment';
 import { skip } from 'qunit';
 
-import { assertionInjector, assertionCleanup } from 'demo/tests/assertions';
 import { reset as windowReset } from 'ember-window-mock';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { assertionInjector, assertionCleanup } from 'ember-fastboot-demo/tests/assertions';
 import { setupApplicationTest, setupRenderingTest, setupTest } from 'ember-qunit';
 
 // this logic could be anything, but in this case...
@@ -76,7 +76,7 @@ function setupYaddaTest(annotations) {
 
       hooks.afterEach(function() {
         assertionCleanup(this.owner.application);
-      })
+      });
     };
   }
   if (annotations.setuprenderingtest) {

@@ -7,10 +7,10 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.route('sign-in');
   this.route('messages', { path: '/' });
-  this.route('demo-auth-callback', { path: '/auth/demo/callback' });
   this.route('members-area');
+  this.route('sign-in');
+  this.route('auth-callback', { path: '/auth/demo/callback' });
 });
 
 export default Router;

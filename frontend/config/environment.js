@@ -2,14 +2,14 @@
 
 module.exports = function(environment) {
   let ENV = {
-    modulePrefix: 'demo',
+    modulePrefix: 'ember-fastboot-demo',
     environment,
     rootURL: '/',
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
-        // e.g. 'with-controller': true
+        // e.g. EMBER_NATIVE_DECORATOR_SUPPORT: true
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
@@ -27,8 +27,8 @@ module.exports = function(environment) {
     'ember-simple-auth' : {
       baseURL:                     '',
       authenticationRoute:         'sign-in',
-      routeAfterAuthentication:    'home',
-      routeIfAlreadyAuthenticated: 'home'
+      routeAfterAuthentication:    'messages',
+      routeIfAlreadyAuthenticated: 'messages'
     },
 
     fastboot: {
@@ -42,7 +42,7 @@ module.exports = function(environment) {
 
     'ember-cli-mirage' : {
       enabled: false
-    },
+    }
   };
 
   if (environment === 'development') {
@@ -51,11 +51,9 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
-
   }
 
   if (environment === 'test') {
-
     // Testem prefers this...
     ENV.locationType = 'none';
 

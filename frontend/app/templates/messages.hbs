@@ -1,5 +1,10 @@
 {{#message-list messages=model as |postedMessage|}}
-  {{posted-message tagName="li" body=postedMessage.body author=postedMessage.author timestamp=postedMessage.createdAt}}
+  {{posted-message
+    tagName="li"
+    body=postedMessage.body
+    author=postedMessage.author
+    timestamp=postedMessage.createdAt
+  }}
 {{/message-list}}
 
 {{outlet}}

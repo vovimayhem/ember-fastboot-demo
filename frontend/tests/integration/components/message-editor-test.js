@@ -10,15 +10,18 @@ module('Integration | Component | message-editor', function(hooks) {
     // Set any properties with this.set('myProperty', 'value');
     // Handle any actions with this.set('myAction', function(val) { ... });
 
-    await render(hbs`{{message-editor}}`);
+    await render(hbs`<MessageEditor />`);
 
-    assert.equal(this.element.textContent.trim(), 'Sign In to begin posting messages.');
+    assert.equal(
+      this.element.textContent.trim(),
+      'Sign In to begin posting messages.'
+    );
 
     // Template block usage:
     await render(hbs`
-      {{#message-editor}}
+      <MessageEditor>
         template block text
-      {{/message-editor}}
+      </MessageEditor>
     `);
 
     assert.equal(
