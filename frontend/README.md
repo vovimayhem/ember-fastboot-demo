@@ -1,4 +1,4 @@
-# demo
+# ember-fastboot-demo
 
 This README outlines the details of collaborating on this Ember application.
 A short introduction of this app could easily go here.
@@ -16,7 +16,7 @@ You will need the following things properly installed on your computer.
 ## Installation
 
 * `git clone <repository-url>` this repository
-* `cd demo`
+* `cd ember-fastboot-demo`
 * `yarn install`
 
 ## Running / Development
@@ -36,6 +36,7 @@ Make use of the many generators for code, try `ember help generate` for more det
 
 ### Linting
 
+* `yarn lint:hbs`
 * `yarn lint:js`
 * `yarn lint:js --fix`
 

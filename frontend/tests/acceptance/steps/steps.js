@@ -1,4 +1,4 @@
-import yadda from 'demo/tests/helpers/yadda';
+import { yadda } from 'ember-cli-yadda';
 import { visit, click } from '@ember/test-helpers';
 
 export default function(assert) {
@@ -11,7 +11,7 @@ export default function(assert) {
     })
     .when('I visit the "$page" page', async function(page) {
       let testPage = `/${page}`;
-      if (testPage == '/home') { testPage = '/'; }
+      if (testPage == '/messages') { testPage = '/'; }
       await visit(testPage);
       assert.ok(true, this.step);
     })

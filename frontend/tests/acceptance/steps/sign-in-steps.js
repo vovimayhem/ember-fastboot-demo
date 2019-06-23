@@ -1,5 +1,5 @@
 import steps from './steps';
-import ENV from 'demo/config/environment';
+import ENV from 'ember-fastboot-demo/config/environment';
 import { default as mockedWindow } from 'ember-window-mock';
 
 // step definitions that are shared between features should be moved to the

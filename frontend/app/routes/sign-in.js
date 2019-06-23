@@ -1,16 +1,21 @@
+/* eslint-disable no-debugger */
+
 // Allows mocking window.location.href on tests:
 import window from 'ember-window-mock';
 import Route from '@ember/routing/route';
 import { computed } from '@ember/object';
-import ENV from 'demo/config/environment';
 import { inject as service } from '@ember/service';
+import ENV from 'ember-fastboot-demo/config/environment';
 
-// The UnauthenticatedRoute mixin will redirect the user to somewhere else **IF** the user is
-// already authenticated - see http://ember-simple-auth.com/api/classes/UnauthenticatedRouteMixin.html
+// The UnauthenticatedRoute mixin will redirect the user to somewhere else 
+// **IF** the user is already authenticated
+// - see http://ember-simple-auth.com/api/classes/UnauthenticatedRouteMixin.html
 import UnauthenticatedRoute from 'ember-simple-auth/mixins/unauthenticated-route-mixin';
 
-// This 'sign-in' route will redirect us to the external service auth (backend app):
+// This 'sign-in' route will redirect us to the external service auth (backend
+// app):
 export default Route.extend(UnauthenticatedRoute, {
+  router: service(),
   cookies: service(),
   fastboot: service(),
 
@@ -27,26 +32,27 @@ export default Route.extend(UnauthenticatedRoute, {
   beforeModel() {
     this._super(...arguments);
 
-    // We'll store the URL before the transition (the route that displayed the clicked link to
-    // 'sign-in') in a cookie, so we can redirect the user back there after the external
-    // authentication flow. The redirection is performed by Ember Simple Auth's ApplicationRouteMixin
+    // We'll store the URL before the transition (the route that displayed the
+    // clicked link to 'sign-in') in a cookie, so we can redirect the user back
+    // there after the external authentication flow. The redirection is
+    // performed by Ember Simple Auth's ApplicationRouteMixin
     // - see https://github.com/simplabs/ember-simple-auth/blob/1.5.1/addon/mixins/application-route-mixin.js#L108
     this.storeUrlInCookie();
 
-    const authUrl = this.get('authUrl');
-
-    if (this.get('fastboot.isFastBoot')) {
-      this.get('fastboot.response.headers').set('location', authUrl);
+    if (this.fastboot.isFastBoot) {
+      this.fastboot.response.headers.set('location', this.authUrl);
       this.set('fastboot.response.statusCode', 307);
     } else {
-      window.location.replace(authUrl);
+      window.location.replace(this.authUrl);
     }
   },
 
   storeUrlInCookie() {
-    const previousURL = this.get('router.url');
-    const protocol = this.get('router.location.location.protocol');
+    const { currentURL } = this.router;
+    const { protocol } = window.location;
     const cookieOpts = { path: '/', secure: (protocol === 'https:') };
-    return this.get('cookies').write('ember_simple_auth-redirectTarget', previousURL, cookieOpts);
+    const cookieName = 'ember_simple_auth-redirectTarget';
+
+    return this.cookies.write(cookieName, currentURL, cookieOpts);
   }
 })

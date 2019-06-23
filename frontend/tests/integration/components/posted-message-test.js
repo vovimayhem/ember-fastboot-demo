@@ -10,15 +10,15 @@ module('Integration | Component | posted-message', function(hooks) {
     // Set any properties with this.set('myProperty', 'value');
     // Handle any actions with this.set('myAction', function(val) { ... });
 
-    await render(hbs`{{posted-message}}`);
+    await render(hbs`<PostedMessage />`);
 
     assert.equal(this.element.textContent.trim(), '');
 
     // Template block usage:
     await render(hbs`
-      {{#posted-message}}
+      <PostedMessage>
         template block text
-      {{/posted-message}}
+      </PostedMessage>
     `);
 
     assert.equal(this.element.textContent.trim(), 'template block text');
