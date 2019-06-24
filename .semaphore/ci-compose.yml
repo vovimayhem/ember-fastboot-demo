@@ -18,6 +18,21 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
 
+  image_manager:
+    image: icalialabs/docker-image-manager:latest
+    volumes:
+    # Bind the docker socket:
+    - /var/run/docker.sock:/var/run/docker.sock
+
+    # Bind the docker configuration - including credentials:
+    - ${HOME}/.docker/config.json:/root/.docker/config.json
+
+    # Bind the current working directory:
+    - ${PWD}:${PWD}
+    working_dir: ${PWD}
+    environment:
+      TAG_SAFE_BRANCH: ${TAG_SAFE_BRANCH:-master}
+
   postgres:
     image: postgres:10-alpine
     ports:
