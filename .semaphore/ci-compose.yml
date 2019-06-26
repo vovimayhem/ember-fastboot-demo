@@ -80,9 +80,11 @@ services:
       <<: *backend_app_build
       target: release
       cache_from:
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing-${TAG_SAFE_BRANCH:-master}
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:${TAG_SAFE_BRANCH:-master}
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:latest
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:latest
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing
+      
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:${TAG_SAFE_BRANCH}
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing-${TAG_SAFE_BRANCH}
 
   frontend_test:
     build: &frontend_app_build
@@ -104,6 +106,9 @@ services:
       <<: *frontend_app_build
       target: release
       cache_from:
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing-${TAG_SAFE_BRANCH:-master}
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:${TAG_SAFE_BRANCH:-master}
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:latest
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:latest
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:${TAG_SAFE_BRANCH}
+
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing-${TAG_SAFE_BRANCH}
+        
