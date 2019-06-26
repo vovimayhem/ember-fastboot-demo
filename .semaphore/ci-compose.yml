@@ -31,7 +31,9 @@ services:
     - ${PWD}:${PWD}
     working_dir: ${PWD}
     environment:
-      TAG_SAFE_BRANCH: ${TAG_SAFE_BRANCH:-master}
+      GIT_BRANCH: ${SEMAPHORE_GIT_BRANCH:-master}
+      GIT_SHA: ${SEMAPHORE_GIT_SHA:-xxxxxx}
+      COMPOSE_FILE: .semaphore/ci-compose.yml
 
   postgres:
     image: postgres:10-alpine
