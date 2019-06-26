@@ -57,7 +57,8 @@ services:
       dockerfile: Dockerfile
       target: testing
       cache_from:
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing-${TAG_SAFE_BRANCH:-master}
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing-${TAG_SAFE_BRANCH}
     
     entrypoint: /usr/src/bin/dev-entrypoint
 
@@ -89,7 +90,8 @@ services:
       dockerfile: Dockerfile
       target: testing
       cache_from:
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing-${TAG_SAFE_BRANCH:-master}
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing-${TAG_SAFE_BRANCH}
     image: frontend:testing
     command: ember test --launch chromium
     environment:
