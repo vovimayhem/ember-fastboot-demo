@@ -18,6 +18,23 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
 
+  image_manager:
+    image: icalialabs/docker-image-manager:latest
+    volumes:
+    # Bind the docker socket:
+    - /var/run/docker.sock:/var/run/docker.sock
+
+    # Bind the docker configuration - including credentials:
+    - ${HOME}/.docker/config.json:/root/.docker/config.json
+
+    # Bind the current working directory:
+    - ${PWD}:${PWD}
+    working_dir: ${PWD}
+    environment:
+      GIT_BRANCH: ${SEMAPHORE_GIT_BRANCH:-master}
+      GIT_SHA: ${SEMAPHORE_GIT_SHA:-xxxxxx}
+      COMPOSE_FILE: .semaphore/ci-compose.yml
+
   postgres:
     image: postgres:10-alpine
     ports:
@@ -40,7 +57,8 @@ services:
       dockerfile: Dockerfile
       target: testing
       cache_from:
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing-${TAG_SAFE_BRANCH:-master}
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing-${TAG_SAFE_BRANCH}
     
     entrypoint: /usr/src/bin/dev-entrypoint
 
@@ -62,9 +80,11 @@ services:
       <<: *backend_app_build
       target: release
       cache_from:
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing-${TAG_SAFE_BRANCH:-master}
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:${TAG_SAFE_BRANCH:-master}
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:latest
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:latest
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing
+      
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:${TAG_SAFE_BRANCH}
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-backend:testing-${TAG_SAFE_BRANCH}
 
   frontend_test:
     build: &frontend_app_build
@@ -72,7 +92,8 @@ services:
       dockerfile: Dockerfile
       target: testing
       cache_from:
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing-${TAG_SAFE_BRANCH:-master}
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing-${TAG_SAFE_BRANCH}
     image: frontend:testing
     command: ember test --launch chromium
     environment:
@@ -85,6 +106,9 @@ services:
       <<: *frontend_app_build
       target: release
       cache_from:
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing-${TAG_SAFE_BRANCH:-master}
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:${TAG_SAFE_BRANCH:-master}
-        - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:latest
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:latest
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:${TAG_SAFE_BRANCH}
+
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing
+      - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing-${TAG_SAFE_BRANCH}
+        

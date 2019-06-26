@@ -18,27 +18,41 @@ blocks:
       prologue:
         commands:
           - checkout
+
+          # Alias docker-compose commands as 'ci-compose':
+          - alias ci-compose="docker-compose --file .semaphore/ci-compose.yml"
+
           # Log in to AWS ECR:
-          - docker-compose --file .semaphore/ci-compose.yml run --rm aws_ecr_login | tr -d '\r' | bash
+          - ci-compose run --rm aws_ecr_login | tr -d '\r' | bash
           # Get the Git branch name safe to use as a docker image tag:
           - export TAG_SAFE_BRANCH=$(echo ${SEMAPHORE_GIT_BRANCH} | tr '/' '-')
       jobs:
         - name: Run Backend Tests
           commands:
-            - export IMAGE_TAG=${ECR_IMAGE_NAME_BASE}-backend:testing-${TAG_SAFE_BRANCH}
-            # Pull the image to use it as cache:
-            - docker pull ${IMAGE_TAG} ; echo "Layer cache ready"
-            - docker-compose --file .semaphore/ci-compose.yml run --rm backend_test
-            - docker tag backend:testing ${IMAGE_TAG}
-            - docker push ${IMAGE_TAG}
+            # Pull the images referenced in the 'cache_from' key:
+            - ci-compose run image_manager download-cache backend_test
+
+            # Build the image:
+            - ci-compose build --pull backend_test
+
+            # Run tests:
+            - ci-compose run --rm backend_test 
+
+            # Tag & Push:
+            - ci-compose run image_manager tag-and-push backend_test ${ECR_IMAGE_NAME_BASE}-backend
         - name: Run Frontend Tests
           commands:
-            - export IMAGE_TAG=${ECR_IMAGE_NAME_BASE}-frontend:testing-${TAG_SAFE_BRANCH}
-            # Pull the image to use it as cache:
-            - docker pull ${IMAGE_TAG} ; echo "Layer cache ready"
-            - docker-compose --file .semaphore/ci-compose.yml run --rm frontend_test
-            - docker tag frontend:testing ${IMAGE_TAG}
-            - docker push ${IMAGE_TAG}
+            # Pull the images referenced in the 'cache_from' key:
+            - ci-compose run image_manager download-cache frontend_test
+            
+            # Build the image:
+            - ci-compose build --pull frontend_test
+
+            # Run tests:
+            - ci-compose run --rm frontend_test
+
+            # Tag & Push:
+            - ci-compose run image_manager tag-and-push frontend_test ${ECR_IMAGE_NAME_BASE}-frontend
   
   # Releases will always be built:
   - name: Build Release
@@ -51,60 +65,36 @@ blocks:
       prologue:
         commands:
           - checkout
+
+          # Alias docker-compose commands as 'ci-compose':
+          - alias ci-compose="docker-compose --file .semaphore/ci-compose.yml"
+          
           # Log in to AWS ECR:
-          - docker-compose --file .semaphore/ci-compose.yml run --rm aws_ecr_login | tr -d '\r' | bash
+          - ci-compose run --rm aws_ecr_login | tr -d '\r' | bash
           # Get the Git branch name safe to use as a docker image tag:
           - export TAG_SAFE_BRANCH=$(echo ${SEMAPHORE_GIT_BRANCH} | tr '/' '-')
       jobs:
         - name: Build Backend Image
           commands:
-            - export TESTING_IMAGE_TAG=${ECR_IMAGE_NAME_BASE}-backend:testing-${TAG_SAFE_BRANCH}
-            - export GIT_SHA_IMAGE_TAG=${ECR_IMAGE_NAME_BASE}-backend:${SEMAPHORE_GIT_SHA:0:7}
-            - export BRANCH_IMAGE_TAG=${ECR_IMAGE_NAME_BASE}-backend:${TAG_SAFE_BRANCH}
-            - export LATEST_IMAGE_TAG=${ECR_IMAGE_NAME_BASE}-backend:latest
+            # Pull the images referenced in the 'cache_from' key:
+            - ci-compose run image_manager download-cache backend_release
 
-            # Pull the image to use it as cache:
-            - docker pull ${TESTING_IMAGE_TAG} ; docker pull ${BRANCH_IMAGE_TAG} ; docker pull ${LATEST_IMAGE_TAG} ; echo "Layer cache ready"
-            
             # Build the release image:
-            - docker-compose --file .semaphore/ci-compose.yml build backend_release
+            - ci-compose build --pull backend_release
             
-            # Push the BRANCH_NAME tag:
-            - docker tag backend:latest ${BRANCH_IMAGE_TAG}
-            - docker push ${BRANCH_IMAGE_TAG}
-
-            # Push the SHORT_SHA tag:
-            - docker tag backend:latest ${GIT_SHA_IMAGE_TAG}
-            - docker push ${GIT_SHA_IMAGE_TAG}
-
-            # Push the "latest" tag:
-            - docker tag backend:latest ${LATEST_IMAGE_TAG}
-            - docker push ${LATEST_IMAGE_TAG}
+            # Tag & Push:
+            - ci-compose run image_manager tag-and-push backend_release ${ECR_IMAGE_NAME_BASE}-backend
 
         - name: Build Frontend Image
           commands:
-            - export TESTING_IMAGE_TAG=${ECR_IMAGE_NAME_BASE}-frontend:testing-${TAG_SAFE_BRANCH}
-            - export GIT_SHA_IMAGE_TAG=${ECR_IMAGE_NAME_BASE}-frontend:${SEMAPHORE_GIT_SHA:0:7}
-            - export BRANCH_IMAGE_TAG=${ECR_IMAGE_NAME_BASE}-frontend:${TAG_SAFE_BRANCH}
-            - export LATEST_IMAGE_TAG=${ECR_IMAGE_NAME_BASE}-frontend:latest
-            
-            # Pull the image to use it as cache:
-            - docker pull ${TESTING_IMAGE_TAG} ; docker pull ${BRANCH_IMAGE_TAG} ; docker pull ${LATEST_IMAGE_TAG} ; echo "Layer cache ready"
+            # Pull the images referenced in the 'cache_from' key:
+            - ci-compose run image_manager download-cache frontend_release
             
             # Build the release image:
-            - docker-compose --file .semaphore/ci-compose.yml build frontend_release
+            - ci-compose build --pull frontend_release
             
-            # Push the BRANCH_NAME tag:
-            - docker tag frontend:latest ${BRANCH_IMAGE_TAG}
-            - docker push ${BRANCH_IMAGE_TAG}
-
-            # Push the SHORT_SHA tag:
-            - docker tag frontend:latest ${GIT_SHA_IMAGE_TAG}
-            - docker push ${GIT_SHA_IMAGE_TAG}
-
-            # Push the "latest" tag:
-            - docker tag frontend:latest ${LATEST_IMAGE_TAG}
-            - docker push ${LATEST_IMAGE_TAG}
+            # Tag & Push:
+            - ci-compose run image_manager tag-and-push frontend_release ${ECR_IMAGE_NAME_BASE}-frontend
   
 promotions:
   - name: Production deploy
