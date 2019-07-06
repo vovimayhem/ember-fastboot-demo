@@ -15,7 +15,7 @@ class PostsController < ApplicationApiController
 
   # GET /posts/1
   def show
-    render jsonapi: @post
+    render jsonapi: @post, include: include_params
   end
 
   # POST /posts
