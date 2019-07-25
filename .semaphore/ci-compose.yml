@@ -95,7 +95,7 @@ services:
       - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing
       - 564922552600.dkr.ecr.eu-central-1.amazonaws.com/vovimayhem/ember-fastboot-demo-frontend:testing-${TAG_SAFE_BRANCH}
     image: frontend:testing
-    command: ember test --launch chromium
+    command: ember test --path /usr/src/dist --launch chromium
     environment:
       # Makes test suite use chromium instead of chrome inside this container:
       CI: "true"
